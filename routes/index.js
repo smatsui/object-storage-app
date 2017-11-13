@@ -36,7 +36,12 @@ router.get('/:accountid', function(req, res, next){
   var selectStatement = businessNetworkConnection.buildQuery('SELECT org.acme.objectstore.Container WHERE (account == _$class)');
   businessNetworkConnection.query(selectStatement, { "class": "resource:org.acme.objectstore.Account#" + req.params.accountid })
   .then(function(results) {
-    res.send(String(results));
+    let containers = "";
+    for(let i=0; i<results.length; i++){
+      containers += results[i].containerId;
+      containers += ",";
+    }
+    res.send(containers);
   }).catch(function (error){
     res.send(error);
   });
@@ -67,7 +72,12 @@ router.get('/:accountid/:containerid', function(req, res, next){
   var accountContainerId = req.params.accountid + "/" + req.params.containerid;
   businessNetworkConnection.query(selectStatement, { "class": "resource:org.acme.objectstore.Container#" + accountContainerId })
   .then(function(results) {
-    res.send(String(results));
+    let objects = "";
+    for(let i=0; i<results.length; i++){
+      objects += results[i].objectId;
+      objects += ",";
+    }
+    res.send(objects);
   }).catch(function (error){
     res.send(error);
   });
